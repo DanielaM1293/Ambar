@@ -1,0 +1,32 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite" // en producción: "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Booking {
+  id              String   @id @default(cuid())
+  code            String   @unique
+  token           String   @unique // enlace privado para gestionar la reserva
+  name            String
+  email           String
+  menu            Int
+  guests          Int
+  wine            Int
+  occ             Int      @default(0)
+  diet            Int      @default(0)
+  note            String   @default("")
+  date            String   // YYYY-MM-DD
+  time            String   // HH:mm
+  amount          Int      // depósito en centavos USD
+  lang            String   @default("es")
+  status          String   @default("PENDING") // PENDING | PAID | CANCELLED
+  paymentIntentId String?  @unique
+  refunded        Boolean  @default(false)
+  reminded        Boolean  @default(false)
+  createdAt       DateTime @default(now())
+  @@index([date, time])
+}
